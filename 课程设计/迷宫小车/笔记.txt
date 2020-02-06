@@ -1,0 +1,199 @@
+三个层次：
+从起点走到某一个终点
+从终点开始遍历迷宫，获得每格的信息
+
+数据结构：
+数组：地图（回溯通路和挡板信息），等高表
+堆栈：顺序记录岔路口坐标
+
+算法：
+回溯（按原路返回）
+计算等高表算法
+
+程序设计具体思路：
+1.每个格子编一个坐标
+2.全部信息初始化（坐标，回溯方向，信息初值，堆栈数据及指针）
+3.确定行驶策略，挡板位置，是否走过，结合小车方向，确定小车行进的方式，注意方向和坐标的刷新和变换。
+4.新坐标记录信息（回溯方向和挡板信息），岔路口判断和压入堆栈
+5.遍历完成判断及提示
+6.最佳路径计算（建立等高表）
+
+方向及其修正：
+（上右下左0123表示小车目前方向）
+绝对方向0
+相对方向
+转完后的方向=（绝对方向+转弯方向）%4
+
+单元信息标记些什么：
+八位二进制数记录，高四位：回溯信息，低四位：挡板信息
+回溯方向的记录，准备一个回溯方向数组（上0:1101下，1:1110, 2:0111， 3：）
+
+岔路口：
+没有走过的路大于一，就把此时的坐标放入堆栈
+
+最佳路径和等高表（冲刺）
+
+功能函数准备：
+修正函数两个
+停止函数两个
+回溯函数
+
+！！！！改变了方向一定要修正绝对方向，走了一格一定要进行当前坐标刷新
+来到一格先判断挡板信息
+
+
+=================================================
+硬件+驱动->行为函数（前，左，右，退）->修正函数（让左或右电机多转）【准备工作】
+编程：迷宫程序+接口（调用驱动）
+迷宫程序：
+确认探索法则（5种）->遍历（收集信息：从红外收集，处理信息：...）->冲刺
+遍历：1、修正绝对方向是为了在小车直走后，我们能知道他在地图上的位置，即下一步该处理数组中的哪一项了
+多层调用会引起堆栈溢出！！！！
+unsigned char QYZd0()
+{
+	if(irQ==0)
+	{
+		if(irY==0)
+		{
+			if(irZ==0)
+				return 0xf0;
+			else
+				return 0xf1;
+		}
+		else
+		{
+			if(irZ==0)
+				return 0xf4;
+			else
+				return 0xf5;
+		}
+	}
+	else
+	{
+		if(irY==0)
+		{
+			if(irZ==0)
+				return 0xf8;
+			else
+				return 0xf9;
+		}
+		else
+		{
+			if(irZ==0)
+				return 0xfc;
+			else
+				return 0xfd;
+		}
+	}
+}
+unsigned char QYZd1()
+{
+	if(irQ==0)
+	{
+		if(irY==0)
+		{
+			if(irZ==0)
+				return 0xf0;
+			else
+				return 0xf8;
+		}
+		else
+		{
+			if(irZ==0)
+				return 0xf2;
+			else
+				return 0xfa;
+		}
+	}
+	else
+	{
+		if(irY==0)
+		{
+			if(irZ==0)
+				return 0xf4;
+			else
+				return 0xfc;
+		}
+		else
+		{
+			if(irZ==0)
+				return 0xf6;
+			else
+				return 0xfe;
+		}
+	}
+}
+unsigned char QYZd2()
+{
+	if(irQ==0)
+	{
+		if(irY==0)
+		{
+			if(irZ==0)
+				return 0xf0;
+			else
+				return 0xf4;
+		}
+		else
+		{
+			if(irZ==0)
+				return 0xf1;
+			else
+				return 0xf5;
+		}
+	}
+	else
+	{
+		if(irY==0)
+		{
+			if(irZ==0)
+				return 0xf2;
+			else
+				return 0xf6;
+		}
+		else
+		{
+			if(irZ==0)
+				return 0xf3;
+			else
+				return 0xf7;
+		}
+	}
+}
+unsigned char QYZd3()
+{
+	if(irQ==0)
+	{
+		if(irY==0)
+		{
+			if(irZ==0)
+				return 0xf0;
+			else
+				return 0xf2;
+		}
+		else
+		{
+			if(irZ==0)
+				return 0xf8;
+			else
+				return 0xfa;
+		}
+	}
+	else
+	{
+		if(irY==0)
+		{
+			if(irZ==0)
+				return 0xf1;
+			else
+				return 0xf3;
+		}
+		else
+		{
+			if(irZ==0)
+				return 0xf9;
+			else
+				return 0xfb;
+		}
+	}
+}
